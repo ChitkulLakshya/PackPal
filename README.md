@@ -1,73 +1,308 @@
-# Welcome to your Lovable project
+# PackPal - Smart Travel Packing Assistant 🧳
 
-## Project info
+PackPal is a comprehensive travel planning web application that helps travelers create personalized packing checklists with real-time weather data, interactive maps, and travel mode suggestions.
 
-**URL**: https://lovable.dev/projects/97bfa2c0-3066-403c-8a49-eaf1976fbba0
+## ✨ Features
 
-## How can I edit this code?
+- **Smart Packing Lists**: Auto-generated checklists based on destination, trip type, and weather
+- **Interactive Maps**: Visual destination preview using Leaflet.js
+- **Weather Integration**: Real-time weather data and 5-day forecasts via OpenWeatherMap API
+- **Travel Mode Comparison**: Compare flight, train, and bus options with estimated costs and durations
+- **User Authentication**: Secure login and signup system
+- **Save Trips**: Store and manage multiple trips in MongoDB
+- **Responsive Design**: Beautiful UI that works on all devices
+- **Progress Tracking**: Track your packing progress with visual indicators
+- **Drag & Drop**: Intuitive interface for managing packing items
 
-There are several ways of editing your application.
+## 🛠️ Tech Stack
 
-**Use Lovable**
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for fast development and building
+- **Tailwind CSS** for styling
+- **Framer Motion** for animations
+- **React Router** for navigation
+- **Leaflet.js / React-Leaflet** for interactive maps
+- **Axios** for API calls
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/97bfa2c0-3066-403c-8a49-eaf1976fbba0) and start prompting.
+### Backend
+- **Node.js** with Express
+- **MongoDB** with Mongoose
+- **JWT** for authentication
+- **bcryptjs** for password hashing
 
-Changes made via Lovable will be committed automatically to this repo.
+### APIs
+- **OpenWeatherMap API** - Weather data
+- **OpenStreetMap Nominatim** - Geocoding (free)
+- Custom travel mode estimation
 
-**Use your preferred IDE**
+## 📋 Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Before you begin, ensure you have the following installed:
+- **Node.js** (v16 or higher)
+- **npm** or **yarn**
+- **MongoDB** (local or Atlas cloud)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🚀 Installation & Setup
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### 1. Clone the Repository
+```bash
+git clone <your-repo-url>
+cd packpal
 ```
 
-**Edit a file directly in GitHub**
+### 2. Install Frontend Dependencies
+```bash
+npm install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### 3. Install Backend Dependencies
+```bash
+cd server
+npm install
+cd ..
+```
 
-**Use GitHub Codespaces**
+### 4. Environment Setup
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+#### Backend Environment Variables
+Create a `.env` file in the `server` directory:
 
-## What technologies are used for this project?
+```env
+# MongoDB Connection
+MONGODB_URI=mongodb://localhost:27017/packpal
+# OR for MongoDB Atlas:
+# MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/packpal
 
-This project is built with:
+# JWT Secret (generate a random string)
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Server Port
+PORT=5000
+```
 
-## How can I deploy this project?
+#### Frontend API Configuration
+The frontend is configured to connect to the backend at `http://localhost:5000`. If you need to change this, update `src/utils/api.ts`.
 
-Simply open [Lovable](https://lovable.dev/projects/97bfa2c0-3066-403c-8a49-eaf1976fbba0) and click on Share -> Publish.
+### 5. MongoDB Setup
 
-## Can I connect a custom domain to my Lovable project?
+#### Option A: Local MongoDB
+1. Install MongoDB Community Edition: https://www.mongodb.com/docs/manual/installation/
+2. Start MongoDB service:
+   ```bash
+   # On macOS
+   brew services start mongodb-community
+   
+   # On Linux
+   sudo systemctl start mongod
+   
+   # On Windows
+   net start MongoDB
+   ```
+3. Your MongoDB will be running at `mongodb://localhost:27017`
 
-Yes, you can!
+#### Option B: MongoDB Atlas (Cloud)
+1. Create a free account at https://www.mongodb.com/cloud/atlas
+2. Create a new cluster (free tier available)
+3. Add your IP address to the whitelist (or use `0.0.0.0/0` for testing)
+4. Create a database user with read/write permissions
+5. Get your connection string and update `MONGODB_URI` in `.env`
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### 6. Database Schema
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+The application will automatically create the following collections when you first use them:
+
+#### Users Collection
+```javascript
+{
+  _id: ObjectId,
+  name: String (required),
+  email: String (required, unique),
+  password: String (required, hashed),
+  createdAt: Date
+}
+```
+
+#### Trips Collection
+```javascript
+{
+  _id: ObjectId,
+  userId: ObjectId (ref: User, required),
+  destination: String (required),
+  coordinates: {
+    lat: Number,
+    lon: Number
+  },
+  tripType: String (enum: ["business", "leisure", "adventure", "family", "romantic", "solo"], required),
+  startDate: Date (required),
+  endDate: Date (required),
+  weatherSummary: String,
+  createdAt: Date
+}
+```
+
+**No manual database setup is required** - Mongoose will create collections automatically.
+
+### 7. OpenWeatherMap API Key
+
+To enable weather features:
+
+1. Sign up for a free API key at https://openweathermap.org/api
+2. Get your API key from the dashboard
+3. When you first use the weather feature in the app, you'll see a prompt
+4. Store your API key in the browser:
+   ```javascript
+   localStorage.setItem('OPENWEATHER_API_KEY', 'your-api-key-here')
+   ```
+
+Or add it via browser console on the app:
+```javascript
+localStorage.setItem('OPENWEATHER_API_KEY', 'your_api_key_here')
+```
+
+### 8. Start the Application
+
+#### Terminal 1 - Start Backend Server
+```bash
+cd server
+npm start
+```
+The backend will run on `http://localhost:5000`
+
+#### Terminal 2 - Start Frontend Dev Server
+```bash
+npm run dev
+```
+The frontend will run on `http://localhost:5173`
+
+## 📱 Usage
+
+1. **Sign Up**: Create a new account or log in
+2. **Create Trip**: Enter destination, dates, and trip type
+3. **View Map**: See your destination on an interactive map
+4. **Check Weather**: View current weather and 5-day forecast
+5. **Compare Travel Modes**: See estimated costs and times
+6. **Generate Checklist**: Get a smart packing list
+7. **Track Progress**: Check off items as you pack
+8. **Save Trip**: Save your trip for future reference
+9. **Manage Trips**: View and manage all your saved trips
+
+## 🗂️ Project Structure
+
+```
+packpal/
+├── server/                 # Backend
+│   ├── models/            # Mongoose models
+│   │   ├── User.js
+│   │   └── Trip.js
+│   ├── routes/            # API routes
+│   │   ├── authRoutes.js
+│   │   └── tripRoutes.js
+│   ├── middleware/        # Auth middleware
+│   │   └── authMiddleware.js
+│   ├── server.js          # Express server
+│   ├── package.json
+│   └── .env              # Environment variables
+│
+├── src/                   # Frontend
+│   ├── components/        # React components
+│   │   ├── Header.tsx
+│   │   ├── Footer.tsx
+│   │   ├── MapView.tsx
+│   │   ├── WeatherDisplay.tsx
+│   │   ├── TravelModes.tsx
+│   │   ├── PackingItem.tsx
+│   │   ├── PackingCategory.tsx
+│   │   └── ui/           # Shadcn UI components
+│   ├── pages/            # Page components
+│   │   ├── Index.tsx     # Landing page
+│   │   ├── Login.tsx
+│   │   ├── Signup.tsx
+│   │   ├── TripForm.tsx  # Trip creation
+│   │   ├── Checklist.tsx # Packing checklist
+│   │   └── MyTrips.tsx   # Saved trips
+│   ├── utils/            # Utilities
+│   │   ├── api.ts        # Axios config
+│   │   └── packingListGenerator.ts
+│   ├── App.tsx           # Main app & routing
+│   ├── index.css         # Global styles
+│   └── main.tsx
+│
+├── public/
+├── index.html
+├── package.json
+├── tailwind.config.ts
+├── vite.config.ts
+└── README.md
+```
+
+## 🔐 API Endpoints
+
+### Authentication
+- `POST /api/auth/signup` - Create new user
+- `POST /api/auth/login` - Login user
+
+### Trips (Protected - requires JWT token)
+- `POST /api/trips/save` - Save a new trip
+- `GET /api/trips/user/:id` - Get all trips for a user
+- `DELETE /api/trips/:id` - Delete a trip
+
+## 🎨 Design System
+
+PackPal uses a custom design system with semantic color tokens:
+- **Primary**: Travel-themed green (`hsl(142, 70%, 45%)`)
+- **Secondary**: Ocean blue (`hsl(201, 89%, 48%)`)
+- **Accent**: Coral (`hsl(14, 90%, 60%)`)
+
+All components use these tokens for consistent theming and dark mode support.
+
+## 🐛 Troubleshooting
+
+### MongoDB Connection Issues
+- Ensure MongoDB is running: `mongod --version`
+- Check your connection string in `.env`
+- For Atlas, verify IP whitelist and credentials
+
+### Weather Not Loading
+- Verify your OpenWeatherMap API key is valid
+- Check browser console for errors
+- API keys can take a few minutes to activate after creation
+
+### Backend Connection Failed
+- Ensure backend is running on port 5000
+- Check for port conflicts
+- Verify `baseURL` in `src/utils/api.ts`
+
+### Map Not Displaying
+- Check browser console for errors
+- Ensure Leaflet CSS is imported
+- Verify internet connection for map tiles
+
+## 🚀 Deployment
+
+### Backend (Heroku, Railway, Render)
+1. Push code to Git repository
+2. Connect to deployment platform
+3. Set environment variables
+4. Deploy
+
+### Frontend (Netlify, Vercel)
+1. Build the app: `npm run build`
+2. Deploy the `dist` folder
+3. Update backend URL in environment variables
+
+## 📄 License
+
+MIT License - feel free to use this project for learning or production!
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📧 Support
+
+For issues or questions, please open an issue on GitHub.
+
+---
+
+**Happy Packing with PackPal! ✈️🌍**

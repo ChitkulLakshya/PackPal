@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MapPin, Calendar, Briefcase } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/utils/api";
+import MapView from "@/components/MapView";
+import TravelModes from "@/components/TravelModes";
 
 const TripForm = () => {
   const navigate = useNavigate();
@@ -17,6 +19,7 @@ const TripForm = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [tripType, setTripType] = useState("");
+  const [coordinates, setCoordinates] = useState<{ lat: number; lon: number } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,22 +29,25 @@ const TripForm = () => {
       return;
     }
 
-    // Store trip data in localStorage for now
+    // Store trip data in localStorage
     const tripData = {
       destination,
       startDate,
       endDate,
       tripType,
+      coordinates,
       id: Date.now().toString(),
     };
 
     localStorage.setItem("currentTrip", JSON.stringify(tripData));
+    
     // Attempt to save trip for logged-in users
     try {
       const token = localStorage.getItem("token");
       if (token) {
         await api.post("/api/trips/save", {
           destination,
+          coordinates,
           tripType,
           startDate,
           endDate,
@@ -148,6 +154,31 @@ const TripForm = () => {
               </form>
             </CardContent>
           </Card>
+
+          {/* Map Preview */}
+          {destination && (
+            <div className="mt-8 animate-fade-in">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Destination Preview</CardTitle>
+                  <CardDescription>Visual location of your destination</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <MapView
+                    destination={destination}
+                    onCoordinatesFound={(lat, lon) => setCoordinates({ lat, lon })}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Travel Modes */}
+          {destination && coordinates && (
+            <div className="mt-8 animate-fade-in">
+              <TravelModes destination={destination} distance={500} />
+            </div>
+          )}
         </div>
       </main>
 

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PackingCategory from "@/components/PackingCategory";
+import WeatherDisplay from "@/components/WeatherDisplay";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { generatePackingList, PackingCategory as PackingCategoryType } from "@/utils/packingListGenerator";
@@ -132,6 +133,21 @@ const Checklist = () => {
               <Progress value={progress} className="h-3" />
             </motion.div>
           </div>
+
+          {/* Weather Display */}
+          {tripInfo?.coordinates && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mb-8"
+            >
+              <WeatherDisplay
+                latitude={tripInfo.coordinates.lat}
+                longitude={tripInfo.coordinates.lon}
+              />
+            </motion.div>
+          )}
 
           {/* Categories */}
           <div className="space-y-6 animate-slide-up">
