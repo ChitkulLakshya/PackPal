@@ -29,24 +29,38 @@ const Index = () => {
                 PackPal creates smart, personalized packing lists based on your destination,
                 trip type, and real-time weather data. Travel stress-free.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+
+              {/* Buttons */}
+              <div className="flex flex-col gap-4">
                 <Button
                   variant="hero"
                   size="lg"
-                  onClick={() => navigate("/new-trip")}
-                  className="text-lg"
+                  onClick={() => navigate("/trip-planner")}
+                  className="text-lg w-full"
                 >
-                  Start Packing
+                  Plan Multi-Destination Trip
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => navigate("/my-trips")}
-                  className="text-lg"
-                >
-                  View My Trips
-                </Button>
+
+                <div className="flex gap-4">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => navigate("/new-trip")}
+                    className="text-lg flex-1"
+                  >
+                    Quick Packing List
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => navigate("/my-trips")}
+                    className="text-lg flex-1"
+                  >
+                    View My Trips
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -84,7 +98,10 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="animate-scale-in shadow-lg hover:shadow-xl transition-shadow" style={{ animationDelay: "0.1s" }}>
+            <Card
+              className="animate-scale-in shadow-lg hover:shadow-xl transition-shadow"
+              style={{ animationDelay: "0.1s" }}
+            >
               <CardContent className="pt-8 text-center">
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center">
                   <Cloud className="w-8 h-8 text-white" />
@@ -96,7 +113,10 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="animate-scale-in shadow-lg hover:shadow-xl transition-shadow" style={{ animationDelay: "0.2s" }}>
+            <Card
+              className="animate-scale-in shadow-lg hover:shadow-xl transition-shadow"
+              style={{ animationDelay: "0.2s" }}
+            >
               <CardContent className="pt-8 text-center">
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-accent to-primary flex items-center justify-center">
                   <List className="w-8 h-8 text-white" />

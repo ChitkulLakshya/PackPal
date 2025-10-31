@@ -4,15 +4,29 @@ PackPal is a comprehensive travel planning web application that helps travelers 
 
 ## ✨ Features
 
+### Core Features
+- **Multi-Destination Trip Planner**: Plan trips with multiple destinations, see routes on an interactive map
+- **Destination Autocomplete**: Real-time destination search with coordinates using OpenStreetMap Nominatim
+- **Weather & Temperature Overview**: Live weather data for all destinations with temperature, humidity, and conditions
+- **Transport Options Comparison**: Compare plane ✈️, train 🚆, bus 🚌, and drive 🚗 with:
+  - Travel time estimates
+  - Cost approximations
+  - CO₂ emissions calculations
+  - Automatic highlighting of fastest and cheapest options
+- **Trip Overview Dashboard**: Interactive dashboard showing:
+  - All destinations with weather cards
+  - Route connections on map
+  - Total travel time and cost
+  - CO₂ emissions summary
+- **Interactive Map View**: Leaflet.js integration with:
+  - Multiple destination markers
+  - Route lines connecting destinations
+  - Automatic bounds fitting
 - **Smart Packing Lists**: Auto-generated checklists based on destination, trip type, and weather
-- **Interactive Maps**: Visual destination preview using Leaflet.js
-- **Weather Integration**: Real-time weather data and 5-day forecasts via OpenWeatherMap API
-- **Travel Mode Comparison**: Compare flight, train, and bus options with estimated costs and durations
 - **User Authentication**: Secure login and signup system
 - **Save Trips**: Store and manage multiple trips in MongoDB
+- **Dark/Light Mode**: Theme toggle with system preference detection
 - **Responsive Design**: Beautiful UI that works on all devices
-- **Progress Tracking**: Track your packing progress with visual indicators
-- **Drag & Drop**: Intuitive interface for managing packing items
 
 ## 🛠️ Tech Stack
 
@@ -32,9 +46,10 @@ PackPal is a comprehensive travel planning web application that helps travelers 
 - **bcryptjs** for password hashing
 
 ### APIs
-- **OpenWeatherMap API** - Weather data
-- **OpenStreetMap Nominatim** - Geocoding (free)
-- Custom travel mode estimation
+- **OpenWeatherMap API** - Weather data and forecasts
+- **OpenStreetMap Nominatim** - Geocoding and destination search (free)
+- **OSRM Routing API** - Route calculation and distance (free)
+- Custom transport mode estimation with CO₂ calculations
 
 ## 📋 Prerequisites
 
@@ -143,22 +158,24 @@ The application will automatically create the following collections when you fir
 
 **No manual database setup is required** - Mongoose will create collections automatically.
 
-### 7. OpenWeatherMap API Key
+### 7. Frontend Environment Variables
 
-To enable weather features:
+Create a `.env` file in the root directory (optional, for API keys):
 
+```env
+# OpenWeatherMap API Key (optional - can also be set via browser localStorage)
+VITE_OPENWEATHER_API_KEY=your-openweather-api-key-here
+```
+
+**To get an OpenWeatherMap API key:**
 1. Sign up for a free API key at https://openweathermap.org/api
-2. Get your API key from the dashboard
-3. When you first use the weather feature in the app, you'll see a prompt
-4. Store your API key in the browser:
+2. Get your API key from the dashboard (free tier includes 1,000 calls/day)
+3. Add it to your `.env` file or set it in browser localStorage:
    ```javascript
    localStorage.setItem('OPENWEATHER_API_KEY', 'your-api-key-here')
    ```
 
-Or add it via browser console on the app:
-```javascript
-localStorage.setItem('OPENWEATHER_API_KEY', 'your_api_key_here')
-```
+**Note:** Destination search uses OpenStreetMap Nominatim (free, no API key required). Route calculation uses OSRM (free, no API key required).
 
 ### 8. Start the Application
 
@@ -177,6 +194,17 @@ The frontend will run on `http://localhost:5173`
 
 ## 📱 Usage
 
+### Multi-Destination Trip Planner
+1. Navigate to **Trip Planner** from the home page
+2. **Add Destinations**: Use the search box to find and add multiple destinations
+3. **Set Trip Details**: Enter start/end dates and trip type
+4. **View Route**: See all destinations connected on an interactive map
+5. **Compare Transport**: View transport options between destinations (plane, train, bus, drive)
+6. **Check Weather**: See live weather for each destination
+7. **View Summary**: Check total time, cost, and CO₂ emissions
+8. **Save Trip**: Save your multi-destination trip plan
+
+### Single Destination Packing List
 1. **Sign Up**: Create a new account or log in
 2. **Create Trip**: Enter destination, dates, and trip type
 3. **View Map**: See your destination on an interactive map
@@ -208,6 +236,10 @@ packpal/
 │   ├── components/        # React components
 │   │   ├── Header.tsx
 │   │   ├── Footer.tsx
+│   │   ├── ThemeToggle.tsx # Dark/light mode toggle
+│   │   ├── DestinationAutocomplete.tsx # Destination search with autocomplete
+│   │   ├── TransportComparison.tsx # Transport options comparison
+│   │   ├── TripOverview.tsx # Multi-destination trip dashboard
 │   │   ├── MapView.tsx
 │   │   ├── WeatherDisplay.tsx
 │   │   ├── TravelModes.tsx
@@ -218,7 +250,9 @@ packpal/
 │   │   ├── Index.tsx     # Landing page
 │   │   ├── Login.tsx
 │   │   ├── Signup.tsx
-│   │   ├── TripForm.tsx  # Trip creation
+│   │   ├── TripPlanner.tsx # Multi-destination trip planner
+│   │   ├── TripForm.tsx  # Single destination trip creation
+│   │   ├── Destination.tsx # Single destination view
 │   │   ├── Checklist.tsx # Packing checklist
 │   │   └── MyTrips.tsx   # Saved trips
 │   ├── utils/            # Utilities
@@ -243,7 +277,9 @@ packpal/
 - `POST /api/auth/login` - Login user
 
 ### Trips (Protected - requires JWT token)
-- `POST /api/trips/save` - Save a new trip
+- `POST /api/trips/save` - Save a new trip (supports both single and multi-destination trips)
+  - Single destination: `{ destination, coordinates, tripType, startDate, endDate, ... }`
+  - Multi-destination: `{ destinations: [{ name, coordinates }], route, totalTime, totalCost, totalCO2, ... }`
 - `GET /api/trips/user/:id` - Get all trips for a user
 - `DELETE /api/trips/:id` - Delete a trip
 

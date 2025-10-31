@@ -1,10 +1,12 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import TripForm from "./pages/TripForm";
+import TripPlanner from "./pages/TripPlanner";
 import Checklist from "./pages/Checklist";
 import MyTrips from "./pages/MyTrips";
 import NotFound from "./pages/NotFound";
@@ -15,14 +17,16 @@ import Destination from "./pages/Destination";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/new-trip" element={<TripForm />} />
+          <Route path="/trip-planner" element={<TripPlanner />} />
           <Route path="/destination" element={<Destination />} />
           <Route path="/checklist" element={<Checklist />} />
           <Route path="/my-trips" element={<MyTrips />} />
@@ -33,7 +37,8 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
-  </QueryClientProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

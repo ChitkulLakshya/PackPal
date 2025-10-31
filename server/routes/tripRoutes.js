@@ -10,20 +10,36 @@ router.use(auth);
 // POST /api/trips/save
 router.post("/save", async (req, res) => {
   try {
-    const { destination, coordinates, tripType, startDate, endDate, weatherSummary } = req.body;
-    if (!destination || !tripType || !startDate || !endDate) {
-      return res.status(400).json({ message: "destination, tripType, startDate, endDate are required" });
-    }
-
-    const trip = await Trip.create({
+    const { destination, coordinates, destinations: multiDestinations, tripType, startDate, endDate, weatherSummary, route, totalTime, totalCost, totalCO2 } = req.body;
+    
+    // Support both single destination and multi-destination trips
+    const tripData = {
       userId: req.user.id,
-      destination,
-      coordinates,
       tripType,
       startDate,
       endDate,
-      weatherSummary,
-    });
+    };
+
+    // If multi-destinations provided, use that; otherwise fall back to single destination
+    if (multiDestinations && Array.isArray(multiDestinations) && multiDestinations.length > 0) {
+      tripData.destinations = multiDestinations;
+      tripData.route = route;
+      tripData.totalTime = totalTime;
+      tripData.totalCost = totalCost;
+      tripData.totalCO2 = totalCO2;
+    } else if (destination) {
+      tripData.destination = destination;
+      tripData.coordinates = coordinates;
+      tripData.weatherSummary = weatherSummary;
+    } else {
+      return res.status(400).json({ message: "destination or destinations array is required" });
+    }
+
+    if (!tripData.tripType || !tripData.startDate || !tripData.endDate) {
+      return res.status(400).json({ message: "tripType, startDate, endDate are required" });
+    }
+
+    const trip = await Trip.create(tripData);
     return res.status(201).json(trip);
   } catch (err) {
     return res.status(500).json({ message: "Server error", error: err.message });

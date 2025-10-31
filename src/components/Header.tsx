@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Plane } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   return (
@@ -10,17 +11,23 @@ const Header = () => {
           <span>PackPal</span>
         </Link>
         
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-foreground hover:text-primary transition-colors">
-            Home
-          </Link>
-          <Link to="/new-trip" className="text-foreground hover:text-primary transition-colors">
-            New Trip
-          </Link>
-          <Link to="/my-trips" className="text-foreground hover:text-primary transition-colors">
-            My Trips
-          </Link>
-        </nav>
+        <div className="flex items-center gap-4">
+          <nav className="hidden md:flex items-center gap-6">
+            <Link to="/" className="text-foreground hover:text-primary transition-colors">
+              Home
+            </Link>
+            <Link to="/trip-planner" className="text-foreground hover:text-primary transition-colors">
+              Trip Planner
+            </Link>
+            <Link to="/new-trip" className="text-foreground hover:text-primary transition-colors">
+              New Trip
+            </Link>
+            <Link to="/my-trips" className="text-foreground hover:text-primary transition-colors">
+              My Trips
+            </Link>
+          </nav>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

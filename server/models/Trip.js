@@ -3,7 +3,16 @@ const mongoose = require("mongoose");
 const tripSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    destination: { type: String, required: true, trim: true },
+    destination: { type: String, trim: true }, // For single destination trips
+    destinations: [ // For multi-destination trips
+      {
+        name: { type: String, required: true },
+        coordinates: {
+          lat: { type: Number, required: true },
+          lon: { type: Number, required: true },
+        },
+      },
+    ],
     coordinates: {
       lat: { type: Number },
       lon: { type: Number },
@@ -24,6 +33,9 @@ const tripSchema = new mongoose.Schema(
     route: {
       type: [[Number]], // array of [lat, lon]
     },
+    totalTime: { type: Number }, // Total travel time in hours
+    totalCost: { type: Number }, // Estimated total cost
+    totalCO2: { type: Number }, // Total CO2 emissions in kg
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 );
