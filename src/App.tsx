@@ -10,6 +10,7 @@ import MyTrips from "./pages/MyTrips";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Destination from "./pages/Destination";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/new-trip" element={<TripForm />} />
+          <Route path="/destination" element={<Destination />} />
           <Route path="/checklist" element={<Checklist />} />
           <Route path="/my-trips" element={<MyTrips />} />
           <Route path="/login" element={<Login />} />

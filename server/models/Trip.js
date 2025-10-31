@@ -12,6 +12,18 @@ const tripSchema = new mongoose.Schema(
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     weatherSummary: { type: String },
+    travelOptions: [
+      {
+        mode: { type: String },
+        timeH: { type: Number },
+        cost: { type: Number },
+        fastest: { type: Boolean },
+        cheapest: { type: Boolean },
+      },
+    ],
+    route: {
+      type: [[Number]], // array of [lat, lon]
+    },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 );

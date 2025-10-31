@@ -58,8 +58,9 @@ const TripForm = () => {
       // Non-blocking: still proceed to checklist
     }
     
-    toast.success("Trip created! Generating your packing list...");
-    navigate("/checklist");
+    toast.success("Trip created! Loading destination details...");
+    const params = new URLSearchParams({ dest: destination, startDate, endDate, tripType });
+    navigate(`/destination?${params.toString()}`);
   };
 
   return (
