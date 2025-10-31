@@ -8,17 +8,45 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Calendar, Plus, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import api from "@/utils/api";
 
 const MyTrips = () => {
   const navigate = useNavigate();
   const [trips, setTrips] = useState<any[]>([]);
 
   useEffect(() => {
-    const savedTrips = JSON.parse(localStorage.getItem("savedTrips") || "[]");
-    setTrips(savedTrips);
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    if (!user) {
+      const savedTrips = JSON.parse(localStorage.getItem("savedTrips") || "[]");
+      setTrips(savedTrips);
+      return;
+    }
+    (async () => {
+      try {
+        const { data } = await api.get(`/api/trips/user/${user._id}`);
+        setTrips(data);
+      } catch (err: any) {
+        const message = err?.response?.data?.message || "Failed to fetch trips";
+        toast.error(message);
+      }
+    })();
   }, []);
 
-  const handleDeleteTrip = (index: number) => {
+  const handleDeleteTrip = async (index: number) => {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    const trip = trips[index];
+    if (user && trip?._id) {
+      try {
+        await api.delete(`/api/trips/${trip._id}`);
+        setTrips((prev) => prev.filter((_, i) => i !== index));
+        toast.success("Trip deleted");
+        return;
+      } catch (err: any) {
+        const message = err?.response?.data?.message || "Failed to delete trip";
+        toast.error(message);
+        return;
+      }
+    }
     const updatedTrips = trips.filter((_, i) => i !== index);
     localStorage.setItem("savedTrips", JSON.stringify(updatedTrips));
     setTrips(updatedTrips);
@@ -107,8 +135,7 @@ const MyTrips = () => {
                             </CardTitle>
                             <CardDescription className="flex items-center gap-2">
                               <Calendar className="w-4 h-4" />
-                              {new Date(trip.startDate).toLocaleDateString()} -{" "}
-                              {new Date(trip.endDate).toLocaleDateString()}
+                              {new Date(trip.startDate).toLocaleDateString()} - {new Date(trip.endDate).toLocaleDateString()}
                             </CardDescription>
                           </div>
                           <Button

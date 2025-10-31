@@ -8,6 +8,8 @@ import TripForm from "./pages/TripForm";
 import Checklist from "./pages/Checklist";
 import MyTrips from "./pages/MyTrips";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +24,8 @@ const App = () => (
           <Route path="/new-trip" element={<TripForm />} />
           <Route path="/checklist" element={<Checklist />} />
           <Route path="/my-trips" element={<MyTrips />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

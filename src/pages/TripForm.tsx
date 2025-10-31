@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MapPin, Calendar, Briefcase } from "lucide-react";
 import { toast } from "sonner";
+import api from "@/utils/api";
 
 const TripForm = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const TripForm = () => {
   const [endDate, setEndDate] = useState("");
   const [tripType, setTripType] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!destination || !startDate || !endDate || !tripType) {
@@ -35,6 +36,21 @@ const TripForm = () => {
     };
 
     localStorage.setItem("currentTrip", JSON.stringify(tripData));
+    // Attempt to save trip for logged-in users
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        await api.post("/api/trips/save", {
+          destination,
+          tripType,
+          startDate,
+          endDate,
+          weatherSummary: "",
+        });
+      }
+    } catch (err: any) {
+      // Non-blocking: still proceed to checklist
+    }
     
     toast.success("Trip created! Generating your packing list...");
     navigate("/checklist");
