@@ -120,3 +120,24 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Fix Leaflet map z-index to respect container hierarchy */
+.leaflet-container {
+  position: relative;
+  z-index: 1 !important;
+}
+
+.leaflet-pane {
+  z-index: 1 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 2 !important;
+}
+
+/* Ensure form card stays above map */
+.route-planner-form {
+  position: relative;
+  z-index: 999;
+}

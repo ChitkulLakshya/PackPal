@@ -180,9 +180,10 @@ const RoutePlanner = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
       
+      {/* Single relative container wrapping both map and form */}
       <div className="flex-1 relative pt-20">
-        {/* Map Container - Takes most of the screen */}
-        <div className="absolute inset-0 w-full h-full">
+        {/* Map Container - Lower z-index */}
+        <div className="absolute inset-0 w-full h-full z-[1]">
           {loading ? (
             <div className="w-full h-full flex items-center justify-center bg-muted/30">
               <div className="text-center">
@@ -194,7 +195,7 @@ const RoutePlanner = () => {
             <MapContainer
               center={getMapCenter()}
               zoom={getMapZoom()}
-              style={{ height: "100%", width: "100%" }}
+              style={{ height: "100%", width: "100%", zIndex: 1 }}
               scrollWheelZoom={true}
             >
               <TileLayer
@@ -251,22 +252,22 @@ const RoutePlanner = () => {
           )}
         </div>
 
-        {/* Search Card - Floating on top */}
+        {/* Form Card - Absolute positioning with high z-index */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute top-24 left-4 right-4 md:left-auto md:right-8 md:max-w-md z-40"
+          className="absolute top-4 left-4 right-4 md:top-6 md:left-auto md:right-6 md:w-96 z-[999]"
         >
-          <Card className="bg-card/95 backdrop-blur-md border-border/50 shadow-2xl">
-            <CardContent className="p-6 space-y-4">
+          <Card className="bg-white/95 dark:bg-card/95 backdrop-blur-md border-border/50 shadow-2xl rounded-lg">
+            <CardContent className="p-4 md:p-6 space-y-4">
               <div className="flex items-center gap-2 mb-2">
-                <Navigation className="w-5 h-5 text-primary" />
-                <h2 className="text-xl font-bold">Plan Your Route</h2>
+                <Navigation className="w-5 h-5 text-primary flex-shrink-0" />
+                <h2 className="text-xl font-bold text-foreground">Plan Your Route</h2>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">
+                  <label className="text-sm font-medium mb-2 block text-foreground">
                     Destination
                   </label>
                   <DestinationAutocomplete
@@ -279,8 +280,8 @@ const RoutePlanner = () => {
 
                 {currentPosition && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="w-4 h-4" />
-                    <span>
+                    <MapPin className="w-4 h-4 flex-shrink-0" />
+                    <span className="break-words">
                       Current: {currentPosition.lat.toFixed(4)},{" "}
                       {currentPosition.lon.toFixed(4)}
                     </span>
@@ -289,8 +290,8 @@ const RoutePlanner = () => {
 
                 {destination && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="w-4 h-4 text-primary" />
-                    <span>{destination.displayName}</span>
+                    <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+                    <span className="break-words">{destination.displayName}</span>
                   </div>
                 )}
 
