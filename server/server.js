@@ -27,14 +27,25 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/trips", tripRoutes);
 
-// DB Connection and Server start
+// Environment variable validation
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 if (!MONGO_URI) {
-  console.error("Missing MONGO_URI in environment variables");
+  console.error("❌ ERROR: Missing MONGO_URI in environment variables");
+  console.error("   Please set MONGO_URI in your .env file");
   process.exit(1);
 }
+
+if (!JWT_SECRET) {
+  console.error("❌ ERROR: Missing JWT_SECRET in environment variables");
+  console.error("   Please set JWT_SECRET in your .env file");
+  console.error("   Generate one using: node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\"");
+  process.exit(1);
+}
+
+// DB Connection and Server start
 
 mongoose
   .connect(MONGO_URI, {

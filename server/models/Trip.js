@@ -17,6 +17,10 @@ const tripSchema = new mongoose.Schema(
       lat: { type: Number },
       lon: { type: Number },
     },
+    originCoordinates: {
+      lat: { type: Number },
+      lon: { type: Number },
+    },
     tripType: { type: String, enum: ["business", "leisure", "adventure", "family", "romantic", "solo"], required: true },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },

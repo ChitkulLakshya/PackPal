@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import heroImage from "@/assets/hero-travel.jpg";
 import { CheckCircle2, MapPin, Cloud, List, ArrowRight } from "lucide-react";
@@ -11,7 +11,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Navbar />
       
       {/* Hero Section */}
       <section className="relative pt-24 pb-16 overflow-hidden">
@@ -35,10 +35,10 @@ const Index = () => {
                 <Button
                   variant="hero"
                   size="lg"
-                  onClick={() => navigate("/trip-planner")}
+                  onClick={() => navigate("/route-planner")}
                   className="text-lg w-full"
                 >
-                  Plan Multi-Destination Trip
+                  Plan Your Route
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
 
