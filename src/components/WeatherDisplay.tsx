@@ -32,22 +32,24 @@ const WeatherDisplay = ({ latitude, longitude }: WeatherDisplayProps) => {
     const fetchWeather = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
-        // Note: Users need to add their OpenWeatherMap API key
-        const API_KEY = localStorage.getItem('OPENWEATHER_API_KEY') || 'demo';
+        // ✅ Use environment variable instead of localStorage
+        const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+        if (!API_KEY) throw new Error("Missing OpenWeatherMap API key");
+
         const response = await fetch(
           `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&exclude=minutely,hourly,alerts&units=metric&appid=${API_KEY}`
         );
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch weather data');
         }
-        
+
         const data = await response.json();
         setWeather(data);
       } catch (err) {
-        setError('Unable to load weather. Please add your OpenWeatherMap API key in settings.');
+        setError('Unable to load weather. Please check your API key or network.');
         console.error('Weather fetch error:', err);
       } finally {
         setLoading(false);
@@ -164,7 +166,7 @@ const WeatherDisplay = ({ latitude, longitude }: WeatherDisplayProps) => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {weather.daily.slice(0, 5).map((day, index) => (
+              {weather.daily.slice(0, 5).map((day) => (
                 <div
                   key={day.dt}
                   className="text-center p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
