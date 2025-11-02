@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import DestinationAutocomplete, { DestinationSuggestion } from "@/components/DestinationAutocomplete";
 import TransportComparison from "@/components/TransportComparison";
 import TripOverview, { Destination } from "@/components/TripOverview";
+import TravelOptionsDisplay from "@/components/TravelOptionsDisplay";
 import { Plus, Calendar, Briefcase, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -23,6 +24,8 @@ const TripPlanner = () => {
   const [tripType, setTripType] = useState("");
   const [selectedFrom, setSelectedFrom] = useState<{ lat: number; lon: number } | null>(null);
   const [selectedTo, setSelectedTo] = useState<{ lat: number; lon: number } | null>(null);
+  const [fromName, setFromName] = useState<string>("");
+  const [toName, setToName] = useState<string>("");
 
   const handleDestinationSelect = (suggestion: DestinationSuggestion) => {
     const newDestination: Destination = {
@@ -40,9 +43,17 @@ const TripPlanner = () => {
     // If this is the first destination, set it as "from"
     if (destinations.length === 0) {
       setSelectedFrom({ lat: suggestion.lat, lon: suggestion.lon });
+      setFromName(suggestion.displayName);
+      setSelectedTo(null);
+      setToName("");
     } else if (destinations.length === 1) {
       // If this is the second destination, set it as "to"
       setSelectedTo({ lat: suggestion.lat, lon: suggestion.lon });
+      setToName(suggestion.displayName);
+    } else {
+      // If adding more destinations, update "to" to be the last one
+      setSelectedTo({ lat: suggestion.lat, lon: suggestion.lon });
+      setToName(suggestion.displayName);
     }
 
     toast.success(`${suggestion.displayName} added to your trip`);
@@ -61,12 +72,18 @@ const TripPlanner = () => {
     if (reordered.length === 0) {
       setSelectedFrom(null);
       setSelectedTo(null);
+      setFromName("");
+      setToName("");
     } else if (reordered.length === 1) {
       setSelectedFrom({ lat: reordered[0].lat, lon: reordered[0].lon });
+      setFromName(reordered[0].name);
       setSelectedTo(null);
+      setToName("");
     } else {
       setSelectedFrom({ lat: reordered[0].lat, lon: reordered[0].lon });
+      setFromName(reordered[0].name);
       setSelectedTo({ lat: reordered[reordered.length - 1].lat, lon: reordered[reordered.length - 1].lon });
+      setToName(reordered[reordered.length - 1].name);
     }
   };
 
@@ -177,6 +194,22 @@ const TripPlanner = () => {
                   <TransportComparison
                     from={selectedFrom}
                     to={selectedTo}
+                  />
+                </motion.div>
+              )}
+
+              {/* Travel Options Display */}
+              {selectedFrom && selectedTo && fromName && toName && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <TravelOptionsDisplay
+                    from={selectedFrom}
+                    to={selectedTo}
+                    fromName={fromName}
+                    toName={toName}
                   />
                 </motion.div>
               )}

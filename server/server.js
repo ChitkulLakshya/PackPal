@@ -7,6 +7,7 @@ dotenv.config();
 
 const authRoutes = require("./routes/authRoutes");
 const tripRoutes = require("./routes/tripRoutes");
+const travelRoutes = require("./routes/travelRoutes");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/trips", tripRoutes);
+app.use("/api", travelRoutes);
 
 
 const PORT = process.env.PORT || 5000;
