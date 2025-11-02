@@ -59,6 +59,51 @@ function MapBounds({ destinations }: { destinations: Destination[] }) {
   return null;
 }
 
+// Component to handle map resize - fixes Leaflet sizing issues
+function MapResizeHandler() {
+  const map = useMap();
+
+  useEffect(() => {
+    // Initial invalidate after mount
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+
+    // Handle window resize
+    const handleResize = () => {
+      map.invalidateSize();
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Use ResizeObserver for container size changes
+    const container = map.getContainer().parentElement;
+    if (container) {
+      const resizeObserver = new ResizeObserver(() => {
+        // Debounce to avoid too many calls
+        setTimeout(() => {
+          map.invalidateSize();
+        }, 150);
+      });
+
+      resizeObserver.observe(container);
+
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('resize', handleResize);
+        resizeObserver.disconnect();
+      };
+    }
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [map]);
+
+  return null;
+}
+
 const TripOverview = ({
   destinations,
   onRemoveDestination,
@@ -253,17 +298,32 @@ const TripOverview = ({
             <CardTitle>Route Map</CardTitle>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col p-0">
-            <div className="rounded-lg overflow-hidden border flex-1 m-6">
+            <div 
+              className="rounded-lg overflow-hidden border flex-1 m-6"
+              style={{ minHeight: 0 }}
+            >
               <MapContainer
-                style={{ height: "100%", width: "100%" }}
+                key={`map-${destinations.length}`}
+                style={{ height: "100%", width: "100%", minHeight: "400px" }}
                 center={center}
                 zoom={6}
-                scrollWheelZoom
+                scrollWheelZoom={true}
+                zoomControl={true}
+                whenCreated={(mapInstance) => {
+                  // Invalidate size after map is created
+                  setTimeout(() => {
+                    mapInstance.invalidateSize();
+                  }, 100);
+                }}
               >
                 <TileLayer
                   attribution='&copy; OpenStreetMap contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  maxZoom={19}
+                  updateWhenZooming={false}
+                  updateWhenIdle={true}
                 />
+                <MapResizeHandler />
                 {destinations.map((dest, index) => (
                   <Marker
                     key={dest.id}
