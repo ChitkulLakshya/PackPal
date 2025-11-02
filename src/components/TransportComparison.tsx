@@ -221,7 +221,7 @@ const TransportComparison = ({
                 <div className="flex items-center gap-2">
                   <DollarSign className="w-4 h-4 text-muted-foreground" />
                   <span>
-                    <span className="font-medium">${option.cost}</span>{" "}
+                    <span className="font-medium">₹{Math.round(option.cost).toLocaleString("en-IN")}</span>{" "}
                     <span className="text-muted-foreground">approx. cost</span>
                   </span>
                 </div>

@@ -222,7 +222,7 @@ const Destination = () => {
                               {o.cheapest && <Badge variant="secondary">Cheapest</Badge>}
                             </div>
                           </div>
-                          <div className="text-sm text-muted-foreground">~ {o.timeH} h • ${o.cost}</div>
+                          <div className="text-sm text-muted-foreground">~ {o.timeH} h • ₹{Math.round(o.cost).toLocaleString("en-IN")}</div>
                         </div>
                       ))}
                     </div>

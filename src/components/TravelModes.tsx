@@ -105,7 +105,7 @@ const TravelModes = ({ destination, distance = 500 }: TravelModesProps) => {
                   <div className="flex items-center gap-2 text-sm">
                     <DollarSign className="w-4 h-4 text-muted-foreground" />
                     <span className="text-muted-foreground">Est. Cost:</span>
-                    <span className="font-medium">${mode.cost}</span>
+                    <span className="font-medium">₹{Math.round(mode.cost).toLocaleString("en-IN")}</span>
                   </div>
                 </div>
 

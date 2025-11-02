@@ -5,8 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapContainer, TileLayer, Marker, Polyline, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Cloud, CloudRain, Sun, Wind, Droplets, X, MapPin, Calendar } from "lucide-react";
-import { motion } from "framer-motion";
+import { Calendar } from "lucide-react";
 import api from "@/utils/api";
 import { toast } from "sonner";
 
@@ -192,12 +191,6 @@ const TripOverview = ({
     }
   };
 
-  const getWeatherIcon = (description: string) => {
-    const desc = description.toLowerCase();
-    if (desc.includes("rain")) return <CloudRain className="w-5 h-5 text-blue-500" />;
-    if (desc.includes("clear") || desc.includes("sun")) return <Sun className="w-5 h-5 text-yellow-500" />;
-    return <Cloud className="w-5 h-5 text-gray-500" />;
-  };
 
   const center: [number, number] | undefined =
     destinations.length > 0
@@ -205,7 +198,7 @@ const TripOverview = ({
       : undefined;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 flex flex-col h-full">
       {/* Summary Card */}
       <Card>
         <CardHeader>
@@ -221,7 +214,7 @@ const TripOverview = ({
               <div className="text-sm text-muted-foreground">Total Time</div>
             </div>
             <div className="text-center p-4 bg-muted rounded-lg">
-              <div className="text-2xl font-bold">${totalCost}</div>
+              <div className="text-2xl font-bold">₹{Math.round(totalCost).toLocaleString("en-IN")}</div>
               <div className="text-sm text-muted-foreground">Est. Cost</div>
             </div>
             <div className="text-center p-4 bg-muted rounded-lg">
@@ -255,14 +248,14 @@ const TripOverview = ({
 
       {/* Map View */}
       {destinations.length > 0 && center && (
-        <Card>
+        <Card className="flex-1 flex flex-col">
           <CardHeader>
             <CardTitle>Route Map</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="rounded-lg overflow-hidden border">
+          <CardContent className="flex-1 flex flex-col p-0">
+            <div className="rounded-lg overflow-hidden border flex-1 m-6">
               <MapContainer
-                style={{ height: "500px", width: "100%" }}
+                style={{ height: "100%", width: "100%" }}
                 center={center}
                 zoom={6}
                 scrollWheelZoom
@@ -296,60 +289,6 @@ const TripOverview = ({
           </CardContent>
         </Card>
       )}
-
-      {/* Destinations List */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {destinationsWithWeather
-          .sort((a, b) => a.order - b.order)
-          .map((dest, index) => (
-            <motion.div
-              key={dest.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Card className="relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-2 right-2 h-6 w-6"
-                  onClick={() => onRemoveDestination(dest.id)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 pr-8">
-                    <MapPin className="w-4 h-4 text-primary" />
-                    {dest.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {dest.weather ? (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        {getWeatherIcon(dest.weather.description)}
-                        <span className="text-xl font-semibold">
-                          {Math.round(dest.weather.temp)}°C
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Droplets className="w-4 h-4" />
-                        {dest.weather.humidity}% humidity
-                      </div>
-                      <div className="text-sm capitalize text-muted-foreground">
-                        {dest.weather.description}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-sm text-muted-foreground">
-                      Loading weather...
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-      </div>
     </div>
   );
 };

@@ -118,9 +118,8 @@ const TravelOptionsDisplay = ({
   };
 
   const formatPrice = (price: number) => {
-    // Determine currency based on context (you can make this more sophisticated)
-    // For now, using ₹ for Indian context, but you could detect from location
-    return `₹${price.toLocaleString()}`;
+    // Format price in Indian Rupees with Indian number format
+    return `₹${Math.round(price).toLocaleString("en-IN")}`;
   };
 
   if (loading) {
