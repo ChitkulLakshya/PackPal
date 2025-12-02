@@ -11,8 +11,9 @@ const travelRoutes = require("./routes/travelRoutes");
 
 const app = express();
 
-
-app.use(express.json());
+// FIX: Increase body size limit
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(
   cors({
@@ -21,7 +22,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:5173",
       "http://127.0.0.1:5173",
-      "https://pack-pal-zeta.vercel.app", 
+      "https://pack-pal-zeta.vercel.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -29,11 +30,14 @@ app.use(
   })
 );
 
-
 app.use("/api/auth", authRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api", travelRoutes);
 
+// A simple homepage route
+app.get("/", (req, res) => {
+  res.send("PackPal Backend is Running Successfully 🚀");
+});
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
@@ -47,7 +51,7 @@ if (!MONGO_URI) {
 if (!JWT_SECRET) {
   console.error("❌ ERROR: Missing JWT_SECRET in environment variables");
   console.error(
-    '   Generate one using: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"'
+    'Generate new using: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"'
   );
   process.exit(1);
 }
