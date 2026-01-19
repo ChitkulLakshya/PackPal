@@ -4,7 +4,7 @@ PackPal is a comprehensive travel planning web application that helps travelers 
 
 ## ✨ Features
 
-### Core Features
+### Core Featur
 - **Multi-Destination Trip Planner**: Plan trips with multiple destinations, see routes on an interactive map
 - **Destination Autocomplete**: Real-time destination search with coordinates using OpenStreetMap Nominatim
 - **Weather & Temperature Overview**: Live weather data for all destinations with temperature, humidity, and conditions
