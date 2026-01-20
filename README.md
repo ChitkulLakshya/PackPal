@@ -9,7 +9,7 @@ PackPal is a comprehensive travel planning web application that helps travelers 
 - **Destination Autocomplete**: Real-time destination search with coordinates using OpenStreetMap Nominatim
 - **Weather & Temperature Overview**: Live weather data for all destinations with temperature, humidity, and conditions
 - **Transport Options Comparison**: Compare plane ✈️, train 🚆, bus 🚌, and drive 🚗 with:
-  - Travel time estimates
+  - Travel time estimatestion
   - Cost approximations
   - CO₂ emissions calculations
   - Automatic highlighting of fastest and cheapest options
