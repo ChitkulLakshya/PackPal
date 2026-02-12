@@ -310,7 +310,7 @@ All components use these tokens for consistent theming and dark mode support.
 - Verify `baseURL` in `src/utils/api.ts`
 
 ### Map Not Displaying
-- Check browser console for
+- Check browser console for errors
 - Ensure Leaflet CSS is imported
 - Verify internet connection for map tiles
 
